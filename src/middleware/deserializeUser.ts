@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { getUserById, getUserByUsername } from '../service/auth.service';
-import { verifyJwt} from '../utils/jwt';
+import { getUserById, getUserByUsername } from '../service/validation.service';
+import { verifyJwt} from '../util/jwt';
 
 interface TokenBody{
     username: string;

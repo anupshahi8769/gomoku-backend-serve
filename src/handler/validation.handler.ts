@@ -1,17 +1,17 @@
 import express, { Request, Response } from "express";
 import bcrypt from 'bcryptjs';
 import validateSchema from '../middleware/validateSchema';
-import {createUser, getUserByUserName} from "../service/auth.service";
-import { LoginInput, RegisterInput, registerSchema} from "../schema/validation.schema"
+import {createUser, getUserByUsername} from "../service/validation.service";
+import { LoginInput, RegisterInput, signupSchema} from "../schema/validation.schema"
 import { signJwt } from "../util/jwt";
 
 const validationHandler = express.Router();
 
-validationHandler.post("/signup", validateSchema(registerSchema) , async (req: Request<{}, {}, RegisterInput["body"]>, res: Response) => {
+validationHandler.post("/signup", validateSchema(signupSchema) , async (req: Request<{}, {}, RegisterInput["body"]>, res: Response) => {
     try{
         const{username, password} = req.body;
         
-        const existingUser = await getUserByUserName(username);
+        const existingUser = await getUserByUsername(username);
         if (existingUser) {
             return res.status(409).send("User Already Exist. Please Login");
         }
@@ -35,7 +35,7 @@ validationHandler.post("/login", async (req: Request<{},{}, LoginInput["body"]>,
     try {
         const {username,password} = req.body;
 
-        const user = await getUserByUserName(username);
+        const user = await getUserByUsername(username);
 
         if (user && (await bcrypt.compare(password, user.password))){
             const token = signJwt({username, _id: user._id});
